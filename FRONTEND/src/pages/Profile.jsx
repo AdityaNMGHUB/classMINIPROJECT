@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
-import { User, Package, Settings, LogOut, Camera } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { User as UserIcon, Package, Settings, LogOut, Camera } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const { wishlist, toggleWishlist } = useShop();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('orders');
   const [profileImage, setProfileImage] = useState(null);
@@ -16,6 +18,14 @@ const Profile = () => {
       setProfileImage(URL.createObjectURL(file));
     }
   };
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
+
+  if (!user) return null;
 
   return (
     <div className="min-h-screen pt-28 pb-20 bg-gray-50">
@@ -35,7 +45,7 @@ const Profile = () => {
                     {profileImage ? (
                       <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
-                      "JD"
+                      user.name.charAt(0).toUpperCase()
                     )}
                   </div>
                   <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -50,8 +60,8 @@ const Profile = () => {
                   />
                 </div>
                 <div>
-                  <h2 className="font-bold text-gray-900">John Doe</h2>
-                  <p className="text-sm text-gray-500">john@example.com</p>
+                  <h2 className="font-bold text-gray-900">{user.name}</h2>
+                  <p className="text-sm text-gray-500">{user.email}</p>
                 </div>
               </div>
 
@@ -69,8 +79,8 @@ const Profile = () => {
                   <Settings size={20} /> Account Settings
                 </button>
                 <button 
-                  onClick={() => {
-                     // mock logout
+                  onClick={async () => {
+                     await logout();
                      navigate('/login');
                   }}
                   className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-red-500 hover:bg-red-50 transition-colors mt-auto"
@@ -142,11 +152,11 @@ const Profile = () => {
                  <form className="max-w-md space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                      <input type="text" defaultValue="John Doe" className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:border-blue-500" />
+                      <input type="text" defaultValue={user.name} className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:border-blue-500" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                      <input type="email" defaultValue="john@example.com" className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:border-blue-500" />
+                      <input type="email" defaultValue={user.email} className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:border-blue-500" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">New Password (optional)</label>
