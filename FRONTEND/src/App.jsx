@@ -16,32 +16,35 @@ import Signup from './pages/Signup';
 import Profile from './pages/Profile';
 import Wishlist from './pages/Wishlist';
 import NotFound from './pages/NotFound';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
   return (
-    <ShopProvider>
-      <Router>
-        <ScrollToTop />
-        <div className="flex flex-col min-h-screen font-sans selection:bg-blue-100 selection:text-blue-900">
-          <Navbar />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/wishlist" element={<Wishlist />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
-    </ShopProvider>
+    <AuthProvider>
+      <ShopProvider>
+        <Router>
+          <ScrollToTop />
+          <div className="flex flex-col min-h-screen font-sans selection:bg-blue-100 selection:text-blue-900">
+            <Navbar />
+            <main className="flex-grow">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/shop" element={<Shop />} />
+                <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/wishlist" element={<Wishlist />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </Router>
+      </ShopProvider>
+    </AuthProvider>
   );
 }
 
