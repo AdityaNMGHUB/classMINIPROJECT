@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Search, User, Heart, Menu, X, ChevronDown } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
+import { useAuth } from '../context/AuthContext';
 import { categories } from '../data/mockData';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -10,6 +11,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { getCartCount, wishlist } = useShop();
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -109,7 +111,7 @@ const Navbar = () => {
               </button>
             </div>
             
-            <Link to="/profile" className="relative group">
+            <Link to={user ? "/profile" : "/login"} className="relative group">
               <User className="w-5 h-5 text-gray-600 group-hover:text-blue-600 transition-colors" />
             </Link>
 
@@ -198,8 +200,8 @@ const Navbar = () => {
                 </div>
               </div>
               <div className="flex gap-6 mt-4">
-                <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2">
-                  <User className="w-5 h-5" /> Profile
+                <Link to={user ? "/profile" : "/login"} onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2">
+                  <User className="w-5 h-5" /> {user ? 'Profile' : 'Login'}
                 </Link>
                 <Link to="/cart" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2">
                   <ShoppingCart className="w-5 h-5" /> Cart ({getCartCount()})
